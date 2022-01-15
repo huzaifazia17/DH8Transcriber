@@ -187,18 +187,11 @@ process.umask = function() { return 0; };
 },{}],2:[function(require,module,exports){
 const transcriber = require('./transcriber');
 
-// <h1>Big Header</h1>
-// <h2>Smaller Header</h2>
-// <h3>smallest Header</h3>
-// <p>paragraph</p>
-// <a href="#element-id">link to element</a>
-// <div></div>
-// <ul>
-//    <li>bullet list item 1</li>
-//    <li>bullet list item 2</li>
-// </ul>
+let btnClicked = false;
 
 document.getElementById('start').onclick = () => {
+    if (btnClicked) return;
+    btnClicked = true;
     transcriber.transcribe(document.getElementById('path').value);
 };
 },{"./transcriber":33}],3:[function(require,module,exports){
@@ -250,7 +243,7 @@ module.exports.convert = function(pars, chaps) {
     chapNum = 1;
     let parNum = 0;
     chaps.forEach(chap => {
-        htmlContent += `<h2 id="c${chapNum}">${chap.headline}</h2>\r\n`;
+        htmlContent += `<h2 id="c${chapNum}">${chap.gist}</h2>\r\n`;
         htmlContent += '<section>'
         htmlContent += `<h3>Summary</h3>\r\n`;
         htmlContent += `<p>${chap.summary}</p>\r\n`;
@@ -264,10 +257,8 @@ module.exports.convert = function(pars, chaps) {
     });
 
     htmlContent += '</body></html>';
-    
-    console.log(htmlContent);
 
-    var wnd = window.open("about:blank", "", "_blank");
+    var wnd = window.open("Transcribed Content", "", "_blank");
     wnd.document.write(htmlContent);
 }
 },{}],4:[function(require,module,exports){
@@ -2171,16 +2162,17 @@ const assembly = axios.create({
 });
 
 function divideContent(data) {
-    let paragraphs;
-    let chapters = data.chapters;
-
-    assembly
-    .get(`/transcript/${data.id}/paragraphs`)
-    .then((res) => {
-        paragraphs = res.data.paragraphs;
-        return { pars: paragraphs, chaps: chapters };
-    })
-    .catch((err) => console.error(err));
+    return new Promise((resolve, reject) => {
+        assembly
+        .get(`/transcript/${data.id}/paragraphs`)
+        .then((res) => {
+            resolve({
+                pars: res.data.paragraphs,
+                chaps: data.chapters,
+            });
+        })
+        .catch((err) => reject(err));
+    });
 }
 
 function getTranscript(id) {
@@ -2208,22 +2200,14 @@ function getTranscript(id) {
     });
 }
 
-module.exports.transcribe = function(url) {
-    assembly
-    .post('/transcript', {
-        audio_url: url,
-        auto_chapters: true,
-    })
-    .then((res) => {
-        console.log(res);
-        console.log(res.data.id);
-        getTranscript(res.data.id)
-        .then((res) => {
-            const { pars, chaps } = divideContent(res);
-            converter.convert(pars, chaps);
-        })
-        .catch((err) => console.error(err));
-    })
-    .catch((err) => console.error(err));
+module.exports.transcribe = async function(url) {
+    try {
+        const response = await assembly.post('/transcript', { audio_url: url, auto_chapters: true, });
+        const rawTranscript = await getTranscript(response.data.id);
+        const { pars, chaps } = await divideContent(rawTranscript);
+        converter.convert(pars, chaps);
+    } catch (err) {
+        console.error(err);
+    }
 }
 },{"./format-converter":3,"axios":4}]},{},[2]);

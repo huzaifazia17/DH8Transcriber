@@ -46,7 +46,7 @@ module.exports.convert = function(pars, chaps) {
     chapNum = 1;
     let parNum = 0;
     chaps.forEach(chap => {
-        htmlContent += `<h2 id="c${chapNum}">${chap.headline}</h2>\r\n`;
+        htmlContent += `<h2 id="c${chapNum}">${chap.gist}</h2>\r\n`;
         htmlContent += '<section>'
         htmlContent += `<h3>Summary</h3>\r\n`;
         htmlContent += `<p>${chap.summary}</p>\r\n`;
@@ -60,8 +60,6 @@ module.exports.convert = function(pars, chaps) {
     });
 
     htmlContent += '</body></html>';
-    
-    console.log(htmlContent);
 
     var wnd = window.open("about:blank", "", "_blank");
     wnd.document.write(htmlContent);
