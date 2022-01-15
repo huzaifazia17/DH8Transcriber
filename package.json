@@ -1,0 +1,24 @@
+{
+  "name": "DH8Transcriber",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanloftus/DH8Transcriber.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryanloftus/DH8Transcriber/issues"
+  },
+  "homepage": "https://github.com/ryanloftus/DH8Transcriber#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "file-system": "^2.2.2"
+  }
+}
