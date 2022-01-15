@@ -15,10 +15,11 @@ function divideContent(data) {
 
     assembly
     .get(`/transcript/${data.id}/paragraphs`)
-    .then((res) => paragraphs = res.data.paragraphs)
+    .then((res) => {
+        paragraphs = res.data.paragraphs;
+        return { pars: paragraphs, chaps: chapters };
+    })
     .catch((err) => console.error(err));
-
-    return { pars: paragraphs, chaps: chapters };
 }
 
 function getTranscript(id) {
