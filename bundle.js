@@ -186,91 +186,18 @@ process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
 //const fs = require('file-system');
-const axios = require('axios');
-let interval;
-// const assemblyURI = 'https://api.assemblyai.com/v2/transcript';
-
-// const assemblyConfig = {
-//     method: 'POST',
-//     headers: {
-//         authorization: '27b09bc6bf66424ea49dedaaf314b4ea',
-//         'content-type': 'application/json',
-//     },
-//     data: {},
-// };
-
-const assembly = axios.create({
-    baseURL: "https://api.assemblyai.com/v2",
-    headers: {
-        authorization: "27b09bc6bf66424ea49dedaaf314b4ea",
-        "content-type": "application/json",
-    },
-});
-
-function transcribe(res) {
-    document.getElementById('text').innerHTML = res.data.text;
-}
-
-function waitForTranscript(id) {
-    assembly.get(`/transcript/${id}`)
-    .then((res) => {
-        const status = res.data.status;
-        console.log(`result status: ${status}`);
-        if (status === 'completed') {
-            transcribe(res);
-            clearInterval(interval);
-        } else if (status === 'error') {
-            console.log(res);
-            clearInterval(interval);
-        } else {
-            console.log('awaiting results...');
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-        clearInterval(interval);
-    });
-}
-
-function getTranscript() {
-    //const file = document.getElementById('file-path');
-
-    // fs.readFile(file, (err, data) => {
-    //     if (err) return console.error(err);
-    //     else assemblyConfig.data.audio_url = data;
-    // });
-
-    assembly
-    .post("/transcript", {
-        audio_url: document.getElementById('path').value,
-    })
-    .then((res) => {
-        console.log(res);
-        console.log(res.data.id);
-        interval = setInterval(() => waitForTranscript(res.data.id), 1000);
-    })
-    .catch((err) => console.error(err));
-
-    // try {
-    //     const response = await fetch(assemblyURI, assemblyConfig);
-    //     if (response.ok) {
-    //         const jsonResponse = await response.json();
-    //         console.log(jsonResponse);
-    //     } else {
-    //         alert('Request failed.');
-    //         console.log(response);
-    //     }
-    // } catch (err) {
-    //     console.log(err);
-    // }
-}
+const transcriber = require('./transcriber');
 
 document.getElementById('start').onclick = () => {
-    getTranscript();
+    transcriber.getTranscript();
 };
-},{"axios":3}],3:[function(require,module,exports){
+},{"./transcriber":33}],3:[function(require,module,exports){
+function convert() {
+    
+}
+},{}],4:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":5}],4:[function(require,module,exports){
+},{"./lib/axios":6}],5:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -484,7 +411,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-},{"../cancel/Cancel":6,"../core/buildFullPath":11,"../core/createError":12,"../defaults":18,"./../core/settle":16,"./../helpers/buildURL":21,"./../helpers/cookies":23,"./../helpers/isURLSameOrigin":26,"./../helpers/parseHeaders":28,"./../utils":31}],5:[function(require,module,exports){
+},{"../cancel/Cancel":7,"../core/buildFullPath":12,"../core/createError":13,"../defaults":19,"./../core/settle":17,"./../helpers/buildURL":22,"./../helpers/cookies":24,"./../helpers/isURLSameOrigin":27,"./../helpers/parseHeaders":29,"./../utils":32}],6:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -543,7 +470,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":6,"./cancel/CancelToken":7,"./cancel/isCancel":8,"./core/Axios":9,"./core/mergeConfig":15,"./defaults":18,"./env/data":19,"./helpers/bind":20,"./helpers/isAxiosError":25,"./helpers/spread":29,"./utils":31}],6:[function(require,module,exports){
+},{"./cancel/Cancel":7,"./cancel/CancelToken":8,"./cancel/isCancel":9,"./core/Axios":10,"./core/mergeConfig":16,"./defaults":19,"./env/data":20,"./helpers/bind":21,"./helpers/isAxiosError":26,"./helpers/spread":30,"./utils":32}],7:[function(require,module,exports){
 'use strict';
 
 /**
@@ -564,7 +491,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -685,14 +612,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":6}],8:[function(require,module,exports){
+},{"./Cancel":7}],9:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -842,7 +769,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"../helpers/buildURL":21,"../helpers/validator":30,"./../utils":31,"./InterceptorManager":10,"./dispatchRequest":13,"./mergeConfig":15}],10:[function(require,module,exports){
+},{"../helpers/buildURL":22,"../helpers/validator":31,"./../utils":32,"./InterceptorManager":11,"./dispatchRequest":14,"./mergeConfig":16}],11:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -898,7 +825,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":31}],11:[function(require,module,exports){
+},{"./../utils":32}],12:[function(require,module,exports){
 'use strict';
 
 var isAbsoluteURL = require('../helpers/isAbsoluteURL');
@@ -920,7 +847,7 @@ module.exports = function buildFullPath(baseURL, requestedURL) {
   return requestedURL;
 };
 
-},{"../helpers/combineURLs":22,"../helpers/isAbsoluteURL":24}],12:[function(require,module,exports){
+},{"../helpers/combineURLs":23,"../helpers/isAbsoluteURL":25}],13:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -940,7 +867,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":14}],13:[function(require,module,exports){
+},{"./enhanceError":15}],14:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1029,7 +956,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/Cancel":6,"../cancel/isCancel":8,"../defaults":18,"./../utils":31,"./transformData":17}],14:[function(require,module,exports){
+},{"../cancel/Cancel":7,"../cancel/isCancel":9,"../defaults":19,"./../utils":32,"./transformData":18}],15:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1074,7 +1001,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1175,7 +1102,7 @@ module.exports = function mergeConfig(config1, config2) {
   return config;
 };
 
-},{"../utils":31}],16:[function(require,module,exports){
+},{"../utils":32}],17:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -1202,7 +1129,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":12}],17:[function(require,module,exports){
+},{"./createError":13}],18:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1226,7 +1153,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../defaults":18,"./../utils":31}],18:[function(require,module,exports){
+},{"./../defaults":19,"./../utils":32}],19:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -1364,11 +1291,11 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this)}).call(this,require('_process'))
-},{"./adapters/http":4,"./adapters/xhr":4,"./core/enhanceError":14,"./helpers/normalizeHeaderName":27,"./utils":31,"_process":1}],19:[function(require,module,exports){
+},{"./adapters/http":5,"./adapters/xhr":5,"./core/enhanceError":15,"./helpers/normalizeHeaderName":28,"./utils":32,"_process":1}],20:[function(require,module,exports){
 module.exports = {
   "version": "0.24.0"
 };
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -1381,7 +1308,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1453,7 +1380,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":31}],22:[function(require,module,exports){
+},{"./../utils":32}],23:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1469,7 +1396,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1524,7 +1451,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":31}],24:[function(require,module,exports){
+},{"./../utils":32}],25:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1540,7 +1467,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1553,7 +1480,7 @@ module.exports = function isAxiosError(payload) {
   return (typeof payload === 'object') && (payload.isAxiosError === true);
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1623,7 +1550,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":31}],27:[function(require,module,exports){
+},{"./../utils":32}],28:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1637,7 +1564,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":31}],28:[function(require,module,exports){
+},{"../utils":32}],29:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1692,7 +1619,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":31}],29:[function(require,module,exports){
+},{"./../utils":32}],30:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1721,7 +1648,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var VERSION = require('../env/data').version;
@@ -1805,7 +1732,7 @@ module.exports = {
   validators: validators
 };
 
-},{"../env/data":19}],31:[function(require,module,exports){
+},{"../env/data":20}],32:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -2156,4 +2083,85 @@ module.exports = {
   stripBOM: stripBOM
 };
 
-},{"./helpers/bind":20}]},{},[2]);
+},{"./helpers/bind":21}],33:[function(require,module,exports){
+// const assemblyURI = 'https://api.assemblyai.com/v2/transcript';
+
+// const assemblyConfig = {
+//     method: 'POST',
+//     headers: {
+//         authorization: '27b09bc6bf66424ea49dedaaf314b4ea',
+//         'content-type': 'application/json',
+//     },
+//     data: {},
+// };
+const axios = require('axios');
+const converter = require('./format-converter');
+
+let interval;
+
+const assembly = axios.create({
+    baseURL: "https://api.assemblyai.com/v2",
+    headers: {
+        authorization: "27b09bc6bf66424ea49dedaaf314b4ea",
+        "content-type": "application/json",
+    },
+});
+
+function transcribe(res) {
+    document.getElementById('text').innerHTML = res.data.text;
+}
+
+function waitForTranscript(id) {
+    assembly.get(`/transcript/${id}`)
+    .then((res) => {
+        const status = res.data.status;
+        console.log(`result status: ${status}`);
+        if (status === 'completed') {
+            transcribe(res);
+            clearInterval(interval);
+        } else if (status === 'error') {
+            console.log(res);
+            clearInterval(interval);
+        } else {
+            console.log('awaiting results...');
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+        clearInterval(interval);
+    });
+}
+
+module.exports.getTranscript = function() {
+    //const file = document.getElementById('file-path');
+
+    // fs.readFile(file, (err, data) => {
+    //     if (err) return console.error(err);
+    //     else assemblyConfig.data.audio_url = data;
+    // });
+
+    assembly
+    .post("/transcript", {
+        audio_url: document.getElementById('path').value,
+    })
+    .then((res) => {
+        console.log(res);
+        console.log(res.data.id);
+        interval = setInterval(() => waitForTranscript(res.data.id), 1000);
+    })
+    .catch((err) => console.error(err));
+
+    // try {
+    //     const response = await fetch(assemblyURI, assemblyConfig);
+    //     if (response.ok) {
+    //         const jsonResponse = await response.json();
+    //         console.log(jsonResponse);
+    //     } else {
+    //         alert('Request failed.');
+    //         console.log(response);
+    //     }
+    // } catch (err) {
+    //     console.log(err);
+    // }
+}
+},{"./format-converter":3,"axios":4}]},{},[2]);
