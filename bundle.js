@@ -242,7 +242,7 @@ function getTranscript() {
 
     assembly
     .post("/transcript", {
-        audio_url: "https://bit.ly/3yxKEIY"
+        audio_url: document.getElementById('path').value,
     })
     .then((res) => {
         console.log(res);
