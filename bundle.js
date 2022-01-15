@@ -185,11 +185,10 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
-//const fs = require('file-system');
 const transcriber = require('./transcriber');
 
 document.getElementById('start').onclick = () => {
-    transcriber.getTranscript();
+    transcriber.transcribe(document.getElementById('path').value);
 };
 },{"./transcriber":33}],3:[function(require,module,exports){
 function convert() {
@@ -2084,84 +2083,70 @@ module.exports = {
 };
 
 },{"./helpers/bind":21}],33:[function(require,module,exports){
-// const assemblyURI = 'https://api.assemblyai.com/v2/transcript';
-
-// const assemblyConfig = {
-//     method: 'POST',
-//     headers: {
-//         authorization: '27b09bc6bf66424ea49dedaaf314b4ea',
-//         'content-type': 'application/json',
-//     },
-//     data: {},
-// };
 const axios = require('axios');
 const converter = require('./format-converter');
 
-let interval;
-
 const assembly = axios.create({
-    baseURL: "https://api.assemblyai.com/v2",
+    baseURL: 'https://api.assemblyai.com/v2',
     headers: {
-        authorization: "27b09bc6bf66424ea49dedaaf314b4ea",
-        "content-type": "application/json",
+        authorization: '27b09bc6bf66424ea49dedaaf314b4ea',
+        'content-type': 'application/json',
     },
 });
 
-function transcribe(res) {
-    document.getElementById('text').innerHTML = res.data.text;
+function divideContent(data) {
+    let paragraphs;
+    let chapters = data.chapters;
+
+    assembly
+    .get(`/transcript/${data.id}/paragraphs`)
+    .then((res) => paragraphs = res.data.paragraphs)
+    .catch((err) => console.error(err));
+
+    return { pars: paragraphs, chaps: chapters };
 }
 
-function waitForTranscript(id) {
-    assembly.get(`/transcript/${id}`)
-    .then((res) => {
-        const status = res.data.status;
-        console.log(`result status: ${status}`);
-        if (status === 'completed') {
-            transcribe(res);
-            clearInterval(interval);
-        } else if (status === 'error') {
-            console.log(res);
-            clearInterval(interval);
-        } else {
-            console.log('awaiting results...');
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-        clearInterval(interval);
+function getTranscript(id) {
+    return new Promise((resolve, reject) => {
+        let interval = setInterval(() => {
+            assembly.get(`/transcript/${id}`)
+            .then((res) => {
+                const status = res.data.status;
+                console.log(`transcript status: ${status}`);
+                if (status === 'completed') {
+                    clearInterval(interval);
+                    resolve(res.data);
+                } else if (status === 'error') {
+                    clearInterval(interval);
+                    reject(res);
+                } else {
+                    console.log('awaiting transcript...');
+                }
+            })
+            .catch((err) => {
+                clearInterval(interval);
+                reject(err);
+            });
+        }, 1000);
     });
 }
 
-module.exports.getTranscript = function() {
-    //const file = document.getElementById('file-path');
-
-    // fs.readFile(file, (err, data) => {
-    //     if (err) return console.error(err);
-    //     else assemblyConfig.data.audio_url = data;
-    // });
-
+module.exports.transcribe = function(url) {
     assembly
-    .post("/transcript", {
-        audio_url: document.getElementById('path').value,
+    .post('/transcript', {
+        audio_url: url,
+        auto_chapters: true,
     })
     .then((res) => {
         console.log(res);
         console.log(res.data.id);
-        interval = setInterval(() => waitForTranscript(res.data.id), 1000);
+        getTranscript(res.data.id)
+        .then((res) => {
+            const { pars, chaps } = divideContent(res);
+            converter.convert(pars, chaps);
+        })
+        .catch((err) => console.error(err));
     })
     .catch((err) => console.error(err));
-
-    // try {
-    //     const response = await fetch(assemblyURI, assemblyConfig);
-    //     if (response.ok) {
-    //         const jsonResponse = await response.json();
-    //         console.log(jsonResponse);
-    //     } else {
-    //         alert('Request failed.');
-    //         console.log(response);
-    //     }
-    // } catch (err) {
-    //     console.log(err);
-    // }
 }
 },{"./format-converter":3,"axios":4}]},{},[2]);

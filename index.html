@@ -1,17 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Transcriber</title>
-        <meta name="description" content="A tool for converting video/audio lectures/meetings into
+
+<head>
+    <title>Transcriber</title>
+    <meta name="description" content="A tool for converting video/audio lectures/meetings into
         a clean, organized medium.">
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-        <link href="./style.css" rel="stylesheet">
-    </head>
-    <body>
-        <h3>Enter a URL for an audio or video file:</h3>
-        <input id="path" type="text" name="path" value="https://bit.ly/3yxKEIY"
-        ><button id="start" type="button">Transcribe!</button>
-        <p id="text"></p>
-        <script src="./bundle.js"></script>
-    </body>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Abhaya+Libre&family=Bebas+Neue&family=Estonia&family=Yanone+Kaffeesatz&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="./style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="main-section ">
+        <div class="nav animate__animated animate__bounce">
+            <h1 class="title">Audio/Video Transcriber</h1><br>
+        </div>
+        <div class="main-section-transcription">
+            <h3>Enter a URL for an audio or video file to transcribe:</h3>
+            <input id="path" type="text" name="path" value="https://bit.ly/3yxKEIY"><br>
+            <button id="start" type="button">Transcribe!</button>
+            <p id="text"></p>
+        </div>
+    </div>
+    <div class="footer">
+        <h2>Created for Delta Hacks 8 Hackathon by:</h2>
+        <ul>
+            <li>Huzaifa Zia -<a href="https://www.linkedin.com/in/huzaifa-zia-86673b206/" target="_blank"> LinkedIn</a>
+                | <a href="https://github.com/huzaifazia17" target="_blank"> Github</a> | <a
+                    href="mailto:ziahuzaifa123@gmail.com"> Mail</a></li>
+            <li>Ryan Loftus -<a href="" target="_blank"> LinkedIn</a> | <a href="" target="_blank"> Github</a> | <a
+                    href=""> Mail</a></li>
+            <li>Zia Formuly -<a href="" target="_blank"> LinkedIn</a> | <a href="" target="_blank"> Github</a> | <a
+                    href=""> Mail</a></li>
+        </ul>
+        <h3 class="copy">© 2022 Ryan Loftus, Zia Formuly, Huzaifa Zia. All Rights Reserved</h3>
+    </div>
+    <script src="./bundle.js"></script>
+</body>
+
 </html>
