@@ -10,15 +10,17 @@ const assembly = axios.create({
 });
 
 function divideContent(data) {
-    let paragraphs;
-    let chapters = data.chapters;
-
-    assembly
-    .get(`/transcript/${data.id}/paragraphs`)
-    .then((res) => paragraphs = res.data.paragraphs)
-    .catch((err) => console.error(err));
-
-    return { pars: paragraphs, chaps: chapters };
+    return new Promise((resolve, reject) => {
+        assembly
+        .get(`/transcript/${data.id}/paragraphs`)
+        .then((res) => {
+            resolve({
+                pars: res.data.paragraphs,
+                chaps: data.chapters,
+            });
+        })
+        .catch((err) => reject(err));
+    });
 }
 
 function getTranscript(id) {
@@ -46,21 +48,13 @@ function getTranscript(id) {
     });
 }
 
-module.exports.transcribe = function(url) {
-    assembly
-    .post('/transcript', {
-        audio_url: url,
-        auto_chapters: true,
-    })
-    .then((res) => {
-        console.log(res);
-        console.log(res.data.id);
-        getTranscript(res.data.id)
-        .then((res) => {
-            const { pars, chaps } = divideContent(res);
-            converter.convert(pars, chaps);
-        })
-        .catch((err) => console.error(err));
-    })
-    .catch((err) => console.error(err));
+module.exports.transcribe = async function(url) {
+    try {
+        const response = await assembly.post('/transcript', { audio_url: url, auto_chapters: true, });
+        const rawTranscript = await getTranscript(response.data.id);
+        const { pars, chaps } = await divideContent(rawTranscript);
+        converter.convert(pars, chaps);
+    } catch (err) {
+        console.error(err);
+    }
 }
