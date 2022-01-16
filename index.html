@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Transcriber</title>
+    <meta name="description" content="A tool for converting video/audio lectures/meetings into
+        a clean, organized medium.">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Abhaya+Libre&family=Bebas+Neue&family=Estonia&family=Yanone+Kaffeesatz&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="./style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="main-section ">
+        <div class="nav animate__animated animate__bounce">
+            <h1 class="title">ROBO-SUMM</h1>
+            <h3 class="subtitle">An audio/video transcriptor</h3>
+        </div>
+        <div class="main-section-transcription ">
+            <input id="path" type="text" name="path" placeholder="Enter Audio\Video file URL:"><br>
+            <button id="start" type="button" class="animate__animated animate__bounceIn">Transcribe!</button>
+            <p id="text"></p>
+        </div>
+    </div>
+    <div class="about">
+        <div class="about-title">
+            <h1>ABOUT</h1>
+        </div>
+
+        <div class="row">
+            <div class="column aboutdiv-img">
+                <img src="./about-img.jpg" alt="about-img" class="about-img"><br>
+                <img src="./assembly.png" alt="about-img" class="about-img">
+            </div>
+            <div class="column about-description">
+                <p>Robo-Summ is an audio/video transcriber built using AssemblyAI's free transcription API for
+                    DeltaHacks 8
+                    by Huzaifa Zia, Ryan Loftus and Zia Formuly. It can be used to transcribe any audio or video link
+                    into a neatly generated rich text format and output results into neatly divided sections.
+
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <div class="footer">
+        <h2>Created for DeltaHacks 8 Hackathon by:</h2>
+        <ul>
+            <li>Huzaifa Zia -<a href="https://www.linkedin.com/in/huzaifa-zia-86673b206/" target="_blank"> LinkedIn</a>
+                | <a href="https://github.com/huzaifazia17" target="_blank"> Github</a> | <a
+                    href="mailto:ziahuzaifa123@gmail.com"> Mail</a></li>
+            <li>Ryan Loftus -<a href="https://www.linkedin.com/in/ryan-loftus-310455176/" target="_blank"> LinkedIn</a>
+                | <a href="https://github.com/ryanloftus" target="_blank"> Github</a>
+                | <a href="mailto:ryanloftus02@outlook.co"> Mail</a></li>
+            <li>Zia Formuly -<a href="https://linkedin.com/in/zia-formuly" target="_blank"> LinkedIn</a>
+                | <a href="https://github.com/zia-f" target="_blank"> Github</a>
+                | <a href="mailto:azformul@uwaterloo.ca"> Mail</a></li>
+        </ul>
+        <h3 class="copy">© 2022 Ryan Loftus, Zia Formuly, Huzaifa Zia. All Rights Reserved</h3>
+    </div>
+    <script src="./bundle.js"></script>
+</body>
+
+</html>
