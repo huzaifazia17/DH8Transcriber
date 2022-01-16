@@ -1,4 +1,7 @@
 module.exports.convert = function(pars, chaps) {
+    console.log(pars)
+    console.log(chaps)
+    
     var htmlContent = `<!DOCTYPE html> 
     <html lang="en">
     <head>
