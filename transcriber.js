@@ -9,6 +9,10 @@ const assembly = axios.create({
     },
 });
 
+let loading = false;
+
+module.exports.isLoading = function () { return loading; };
+
 function divideContent(data) {
     return new Promise((resolve, reject) => {
         assembly
@@ -49,12 +53,15 @@ function getTranscript(id) {
 }
 
 module.exports.transcribe = async function(url) {
+    loading = true;
     try {
         const response = await assembly.post('/transcript', { audio_url: url, auto_chapters: true, });
         const rawTranscript = await getTranscript(response.data.id);
         const { pars, chaps } = await divideContent(rawTranscript);
         converter.convert(pars, chaps);
+        loading = false;
     } catch (err) {
         console.error(err);
+        loading = false;
     }
 }

@@ -186,20 +186,31 @@ process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
 const transcriber = require('./transcriber');
+const btn = document.getElementById('start');
 
-let btnClicked = false;
+setInterval(() => {
+    if (!transcriber.isLoading()) {
+        btn.innerHTML = 'Transcribe!';
+    } else if (btn.innerHTML === 'Processing...' || btn.innerHTML === 'Transcribe!') {
+        btn.innerHTML = 'Processing';
+    } else {
+        btn.innerHTML += '.';
+    }
+}, 400);
 
 document.getElementById('start').onclick = () => {
-    if (btnClicked) return;
-    btnClicked = true;
+    if (transcriber.isLoading()) return;
     transcriber.transcribe(document.getElementById('path').value);
 };
 },{"./transcriber":33}],3:[function(require,module,exports){
 module.exports.convert = function(pars, chaps) {
+    console.log(pars)
+    console.log(chaps)
+
     var htmlContent = `<!DOCTYPE html> 
     <html lang="en">
     <head>
-        <title>DH8 Transcriber</title>
+        <title>Robo-Summ</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <style>
             * {
@@ -233,7 +244,7 @@ module.exports.convert = function(pars, chaps) {
 
     let chapNum = 1;
     chaps.forEach(chap => {
-        htmlContent += `<li><a href="#c${chapNum}">${chap.gist}</a></li>\r\n`;
+        htmlContent += `<li><a href="#c${chapNum}">${captalize(chap.gist)}</a></li>\r\n`;
         ++chapNum;
     });
 
@@ -243,7 +254,7 @@ module.exports.convert = function(pars, chaps) {
     chapNum = 1;
     let parNum = 0;
     chaps.forEach(chap => {
-        htmlContent += `<h2 id="c${chapNum}">${chap.gist}</h2>\r\n`;
+        htmlContent += `<h2 id="c${chapNum}">${captalize(chap.gist)}</h2>\r\n`;
         htmlContent += '<section>'
         htmlContent += `<h3>Summary</h3>\r\n`;
         htmlContent += `<p>${chap.summary}</p>\r\n`;
@@ -260,6 +271,10 @@ module.exports.convert = function(pars, chaps) {
 
     var wnd = window.open("about:blank", "", "_blank");
     wnd.document.write(htmlContent);
+}
+
+function captalize(str){
+    return str.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
 }
 },{}],4:[function(require,module,exports){
 module.exports = require('./lib/axios');
@@ -2161,6 +2176,10 @@ const assembly = axios.create({
     },
 });
 
+let loading = false;
+
+module.exports.isLoading = function () { return loading; };
+
 function divideContent(data) {
     return new Promise((resolve, reject) => {
         assembly
@@ -2201,13 +2220,16 @@ function getTranscript(id) {
 }
 
 module.exports.transcribe = async function(url) {
+    loading = true;
     try {
         const response = await assembly.post('/transcript', { audio_url: url, auto_chapters: true, });
         const rawTranscript = await getTranscript(response.data.id);
         const { pars, chaps } = await divideContent(rawTranscript);
         converter.convert(pars, chaps);
+        loading = false;
     } catch (err) {
         console.error(err);
+        loading = false;
     }
 }
 },{"./format-converter":3,"axios":4}]},{},[2]);
