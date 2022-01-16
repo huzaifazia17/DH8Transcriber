@@ -258,7 +258,7 @@ module.exports.convert = function(pars, chaps) {
 
     htmlContent += '</body></html>';
 
-    var wnd = window.open("Transcribed Content", "", "_blank");
+    var wnd = window.open("about:blank", "", "_blank");
     wnd.document.write(htmlContent);
 }
 },{}],4:[function(require,module,exports){

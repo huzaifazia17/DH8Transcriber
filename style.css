@@ -85,3 +85,23 @@
     padding-top: 20px;
     font-size: small;
 }
+.about{
+    background-color: #e9e0da;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.about-title{
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+.row {
+display: flex;
+}
+
+.column {
+flex: 70%;
+}
+.about-img{
+    border-radius: 20px;
+}
