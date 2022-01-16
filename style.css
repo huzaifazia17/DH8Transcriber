@@ -32,13 +32,16 @@
     margin: 0 auto;
     padding: 10px;
     position: relative;
-    transform:translateY(190%) ;
+    transform:translateY(180%) ;
     text-align: center;
 }
 .main-section-transcription input{
     box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 2px;
     width:100%;
     margin: 0px 0px 18px 18px;
+    border-radius: 20px;
+    outline: none;
+    padding: 5px 5px 5px 5px;
 }
 .main-section-transcription h3{
     margin: 0px 0px 18px 18px;
@@ -46,6 +49,7 @@
 }
 .main-section-transcription button{
     border-radius: 10px;
+    outline: none;
     color: black;
     background-color: #1776e6;
     padding: 10px;
